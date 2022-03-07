@@ -1,0 +1,64 @@
+version: '3'
+
+services:
+  polkadot:
+    container_name: polkadot
+    image: parity/polkadot
+    ports:
+      - "30333:30333" # p2p port
+      - "9933:9933" # rpc port
+      - "9944:9944" # ws port
+    volumes:
+      - database:/polkadot
+    command: [
+        "--name", "PolkaDocker",
+        "--ws-external",
+        "--rpc-external",
+        "--rpc-cors", "all",
+        "--pruning=1000"
+    ]
+    profiles:
+      - prod
+
+  dev_node:
+    container_name: polkadot-dev
+    image: parity/polkadot
+    ports:
+      - "30333:30333" # p2p port
+      - "9933:9933" # rpc port
+      - "9944:9944" # ws port
+    volumes:
+      - devdb:/polkadot
+    command: [
+        "--name", "PolkaDocker",
+        "--ws-external",
+        "--rpc-external",
+        "--rpc-cors", "all",
+        "--ws-max-connections=1000",
+        "--dev"
+    ]
+    profiles:
+      - dev
+
+  prod_test_client:
+    build: ./test-client
+    depends_on:
+      - polkadot
+    profiles:
+      - prod
+    environment:
+      WS_ADDRESS: "ws://polkadot:9944"
+      TAG: 0      
+
+  prefetch-data:
+    image: alpine
+    command: sh -c "apk --no-cache add curl tar lz4 && mkdir -p rocksdb/.local/share/polkadot/chains/polkadot && curl -o - -L https://dot-rocksdb.polkashots.io/snapshot | lz4 -c -d - | tar -x -C rocksdb/.local/share/polkadot/chains/polkadot"
+    volumes:
+      - database:/rocksdb
+    profiles:
+      - download-snapshot
+
+volumes:
+  database:
+  devdb:
+
