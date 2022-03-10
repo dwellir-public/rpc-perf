@@ -98,6 +98,11 @@ services:
     env_file:
       - ./grafana/config.monitoring
 
+  renderer:
+    image: grafana/grafana-image-renderer
+    ports:
+      - "8081:8081"
+
   prod_test_client:
     build: ./test-client
     depends_on:
