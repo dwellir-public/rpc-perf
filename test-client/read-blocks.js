@@ -10,7 +10,6 @@ const START_BLOCK = process.env.START_BLOCK || 0;
 const END_BLOCK = process.env.END_BLOCK || 1000;
 
 export async function traverseBlocks(address, start, end, tag="X") {
-    // log.info(`${tag}::Traversing blocks from ${start} till ${end}`);
     const provider = new WsProvider(address);
     const api = await ApiPromise.create({ provider: provider });
     const length = end-start;

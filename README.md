@@ -9,4 +9,4 @@ to download the chain snapshot in order to sync the node faster.
 
 
 Spin up prod network and tests with 
-`docker-compose --profile prod up`
+`DB_CACHE=128 docker-compose --profile prod up --abort-on-container-exit`

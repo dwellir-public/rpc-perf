@@ -17,7 +17,8 @@ services:
         "--rpc-external",
         "--rpc-cors", "all",
         "--pruning=1000",
-        "--prometheus-external"
+        "--prometheus-external",
+        "--db-cache=${DB_CACHE}"
     ]
     profiles:
       - prod
@@ -39,7 +40,8 @@ services:
         "--rpc-cors", "all",
         "--ws-max-connections=1000",
         "--prometheus-external",
-        "--dev"
+        "--dev",
+        "--db-cache=${DB_CACHE}"
     ]
     profiles:
       - dev
