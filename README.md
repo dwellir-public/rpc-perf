@@ -12,12 +12,7 @@
 
 - Spin up prod network and tests with 
 
-`DB_CACHE=128 docker-compose --profile prod up --abort-on-container-exit`
-
-
-## Building test clients
-`docker-compose --profile prod build`
-
+`docker-compose --profile prod build && DB_CACHE=128 docker-compose --profile prod up --abort-on-container-exit`
 
 // TODO
 - make file
