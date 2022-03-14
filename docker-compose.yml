@@ -111,9 +111,12 @@ services:
       - polkadot
     profiles:
       - prod
+    volumes:
+      - ./tests/:/etc/tests/  
     environment:
       WS_ADDRESS: "ws://polkadot:9944"
-      TAG: 0      
+      TAG: 0
+      CONN: 30      
 
   prefetch-data:
     image: alpine

@@ -17,6 +17,8 @@
   "license": "ISC",
   "dependencies": {
     "@polkadot/api": "^7.6.1",
-    "fancylog": "^4.0.5"
+    "fancylog": "^4.0.5",
+    "node-fetch": "3.2.3",
+    "axios": "0.26.1"
   }
 }

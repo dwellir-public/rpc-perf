@@ -64,7 +64,7 @@
         "x": 0,
         "y": 0
       },
-      "id": 8,
+      "id": 80,
       "panels": [],
       "title": "CPU",
       "type": "row"
@@ -90,7 +90,7 @@
         "y": 1
       },
       "hiddenSeries": false,
-      "id": 15,
+      "id": 1,
       "legend": {
         "alignAsTable": true,
         "avg": true,
@@ -178,7 +178,7 @@
         "x": 0,
         "y": 8
       },
-      "id": 11,
+      "id": 83,
       "panels": [],
       "title": "Memory",
       "type": "row"
@@ -204,7 +204,7 @@
         "y": 9
       },
       "hiddenSeries": false,
-      "id": 9,
+      "id": 2,
       "legend": {
         "alignAsTable": true,
         "avg": true,
@@ -304,7 +304,7 @@
         "y": 9
       },
       "hiddenSeries": false,
-      "id": 14,
+      "id": 3,
       "legend": {
         "alignAsTable": true,
         "avg": true,
@@ -392,7 +392,7 @@
         "x": 0,
         "y": 17
       },
-      "id": 2,
+      "id": 20,
       "panels": [],
       "title": "Network",
       "type": "row"
@@ -521,7 +521,7 @@
         "y": 18
       },
       "hiddenSeries": false,
-      "id": 6,
+      "id": 5,
       "legend": {
         "alignAsTable": true,
         "avg": true,
@@ -608,7 +608,7 @@
         "x": 0,
         "y": 26
       },
-      "id": 19,
+      "id": 81,
       "panels": [],
       "title": "Misc",
       "type": "row"
