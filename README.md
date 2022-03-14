@@ -10,17 +10,16 @@
 - This test will need to be in sync with polkadot network. To make the sync faster run the following command which will download the latest chain snapshot (~45G).
 `docker-compose run prefetch-data`
 
+- Rebuild test client when code changes or new code is pulled from repository
+
+`docker-compose --profile prod build `
+
 - Spin up prod network and tests with 
 
-`docker-compose --profile prod build && DB_CACHE=128 docker-compose --profile prod up --abort-on-container-exit`
+`docker-compose --env-file <path_to_env_file> --profile prod up --abort-on-container-exit `
 
 // TODO
 - make file
-- dump prometheus metrics
-- snapshot of grafana graph
-- tell how many connections
-- set db-cache
-- test configuration using env files
 - artillery
 - flamegraph node
 

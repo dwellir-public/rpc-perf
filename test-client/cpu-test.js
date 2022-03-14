@@ -2,13 +2,18 @@
 import { traverseBlocks } from './read-blocks.js';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { performance } from 'perf_hooks';
-import * as log from 'fancylog'
+import * as log from 'fancylog';
+import fetch from "node-fetch";
+import * as fs from 'fs';
+import axios from 'axios';
+
 
 const ADDRESS = process.env.WS_ADDRESS || 'ws://127.0.0.1:9944';
 // const ADDRESS = process.env.WS_ADDRESS || 'wss://kusama-rpc.polkadot.io';
-const CONNECTIONS = process.env.CONN || 2;
+const CONNECTIONS = process.env.CONN || 0;
 const TOTAL_BLOCKS = 256;
 const RUN_TAG = process.env.TAG || 'X';
+const TEST_DIR = process.env.TEST_DIR || 'misc';
 
 // Execute script
 async function main() {
@@ -80,7 +85,7 @@ async function fetchMetrics(url, filename) {
 }
 
 async function recordResults(startDate, endDate) {
-  let currentRun = startDate.getTime();
+  let currentRun = TEST_DIR + "/" + startDate.getTime();
   let dir = `./etc/tests/${currentRun}`
   fs.mkdirSync(dir, { recursive: true })
 

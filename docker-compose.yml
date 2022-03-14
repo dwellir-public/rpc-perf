@@ -18,7 +18,7 @@ services:
         "--rpc-cors", "all",
         "--pruning=1000",
         "--prometheus-external",
-        "--db-cache=${DB_CACHE}"
+        "--db-cache=${NODE_DB_CACHE}"
     ]
     profiles:
       - prod
@@ -41,7 +41,7 @@ services:
         "--ws-max-connections=1000",
         "--prometheus-external",
         "--dev",
-        "--db-cache=${DB_CACHE}"
+        "--db-cache=${NODE_DB_CACHE}"
     ]
     profiles:
       - dev
@@ -116,7 +116,8 @@ services:
     environment:
       WS_ADDRESS: "ws://polkadot:9944"
       TAG: 0
-      CONN: 30      
+      CONN: ${TEST_CONNECTIONS}
+      TEST_DIR: ${TEST_DIR}      
 
   prefetch-data:
     image: alpine
