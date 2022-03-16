@@ -8,21 +8,22 @@
 ## Running test on Polkadot prod node
 
 - This test will need to be in sync with polkadot network. To make the sync faster run the following command which will download the latest chain snapshot (~45G).
-`docker-compose run prefetch-data`
+`make download-snapshot`
 
 - Rebuild test client when code changes or new code is pulled from repository
 
-`docker-compose --profile prod build `
+`make build `
 
 - Spin up prod network and tests with 
 
-`docker-compose --env-file <path_to_env_file> --profile prod up --abort-on-container-exit `
+`make test`
 
-// TODO
-- make file
-- artillery
-- flamegraph node
+- To run tests with custom environment, define and pass an environment file
+
+`make test TEST_ENV=low-cache.env`
 
 
-// less peers, more peers, less db cache, more db cache, different versions of polkadot node
-// node-version: v2.3.4
+## TODO
+- Flame graph
+- less peers, more peers, less db cache, more db cache, different versions of polkadot node
+- node-version: v2.3.4

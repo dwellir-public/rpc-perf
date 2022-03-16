@@ -18,11 +18,15 @@ services:
         "--rpc-cors", "all",
         "--pruning=1000",
         "--prometheus-external",
-        "--db-cache=${NODE_DB_CACHE}"
+        "--db-cache=${NODE_DB_CACHE}",
+        "--ws-max-connections=1000"
     ]
-    profiles:
-      - prod
-
+    deploy:
+      resources:
+        limits:
+          cpus: "${NODE_CPUS}"
+          memory: "${NODE_MEM}"
+       
   dev_node:
     container_name: polkadot-dev
     image: parity/polkadot
@@ -43,6 +47,11 @@ services:
         "--dev",
         "--db-cache=${NODE_DB_CACHE}"
     ]
+    deploy:
+      resources:
+        limits:
+          cpus: "${NODE_CPUS}"
+          memory: "${NODE_MEM}"
     profiles:
       - dev
 
@@ -105,12 +114,13 @@ services:
     ports:
       - "8081:8081"
 
-  prod_test_client:
+  test_client:
     build: ./test-client
+    user: "${CURRENT_UID}:${CURRENT_GID}"
     depends_on:
       - polkadot
     profiles:
-      - prod
+      - test
     volumes:
       - ./tests/:/etc/tests/  
     environment:

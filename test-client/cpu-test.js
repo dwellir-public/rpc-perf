@@ -51,6 +51,8 @@ async function main() {
 }
 
 async function chainSync(api) {
+  // wait sometime before starting the tests
+  sleep(15);
   let syncState = await api.rpc.system.syncState();
   let highestBlock = syncState.highestBlock;
   let currentBlock = syncState.currentBlock;
