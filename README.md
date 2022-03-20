@@ -1,4 +1,6 @@
-# rpcperf
+# Rpc-perf
+## Introduction
+Rpc-perf is a framework to stresstest an RPC node for a given system configuration. 
 
 ## Running test on dev nodes
 
@@ -20,10 +22,9 @@
 
 - To run tests with custom environment, define and pass an environment file
 
-`make test TEST_ENV=low-cache.env`
-
+`make test TEST_ENV=.env.low-cache-test`
 
 ## TODO
 - Flame graph
-- less peers, more peers, less db cache, more db cache, different versions of polkadot node
-- node-version: v2.3.4
+- Which metrics?
+- Length of test?

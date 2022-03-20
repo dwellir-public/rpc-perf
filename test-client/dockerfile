@@ -10,4 +10,4 @@ RUN yarn
 COPY . .
 
 EXPOSE 8080
-CMD [ "node", "cpu-test.js" ]
+CMD [ "node", "start.js" ]

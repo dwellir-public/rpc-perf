@@ -1,9 +1,9 @@
 version: '3'
 
 services:
-  polkadot:
-    container_name: polkadot
-    image: parity/polkadot
+  substrate_node:
+    container_name: substrate_node
+    image: ${NODE_IMAGE}
     ports:
       - "30333:30333" # p2p port
       - "9933:9933" # rpc port
@@ -18,42 +18,17 @@ services:
         "--rpc-cors", "all",
         "--pruning=1000",
         "--prometheus-external",
-        "--db-cache=${NODE_DB_CACHE}",
-        "--ws-max-connections=1000"
-    ]
-    deploy:
-      resources:
-        limits:
-          cpus: "${NODE_CPUS}"
-          memory: "${NODE_MEM}"
-       
-  dev_node:
-    container_name: polkadot-dev
-    image: parity/polkadot
-    ports:
-      - "30333:30333" # p2p port
-      - "9933:9933" # rpc port
-      - "9944:9944" # ws port
-      - "9615:9615" # metrics prometheus
-    volumes:
-      - devdb:/polkadot
-    command: [
-        "--name", "PolkaDocker",
-        "--ws-external",
-        "--rpc-external",
-        "--rpc-cors", "all",
+        "--db-cache=${NODE_DB_CACHE_IN_MB}",
         "--ws-max-connections=1000",
-        "--prometheus-external",
-        "--dev",
-        "--db-cache=${NODE_DB_CACHE}"
+        "--unsafe-pruning",
+        "--in-peers=${NODE_IN_PEERS}",
+        "--out-peers=${NODE_OUT_PEERS}"
     ]
     deploy:
       resources:
         limits:
           cpus: "${NODE_CPUS}"
           memory: "${NODE_MEM}"
-    profiles:
-      - dev
 
   node_exporter:
     image: prom/node-exporter
@@ -118,15 +93,18 @@ services:
     build: ./test-client
     user: "${CURRENT_UID}:${CURRENT_GID}"
     depends_on:
-      - polkadot
+      - substrate_node
     profiles:
       - test
     volumes:
       - ./tests/:/etc/tests/  
     environment:
-      WS_ADDRESS: "ws://polkadot:9944"
-      TAG: 0
-      CONN: ${TEST_CONNECTIONS}
+      WS_ADDRESS: "ws://substrate_node:9944"
+      CONCURRENT_CONNECTIONS_BASE: ${CONCURRENT_CONNECTIONS_BASE}
+      CONCURRENT_CONNECTIONS_PEAK: ${CONCURRENT_CONNECTIONS_PEAK}
+      CONCURRENT_CONNECTIONS_RAMP_RATE: ${CONCURRENT_CONNECTIONS_RAMP_RATE}
+      CONCURRENT_CONNECTIONS_WAIT_TIME_IN_SEC: ${CONCURRENT_CONNECTIONS_WAIT_TIME_IN_SEC}
+      TOTAL_REQUESTS: ${TOTAL_REQUESTS}
       TEST_DIR: ${TEST_DIR}      
 
   prefetch-data:
