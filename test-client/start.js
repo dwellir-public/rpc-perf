@@ -133,7 +133,7 @@ async function recordResults(startDate, endDate) {
   await fetchMetrics('http://cadvisor:8080/metrics', `${dir}/metrics-cadvisor.txt`);
   await fetchMetrics('http://node_exporter:9100/metrics', `${dir}/metrics-node-exporter.txt`);
   await fetchMetrics('http://substrate_node:9615/metrics', `${dir}/metrics-polkadot.txt`);
-  let panels = 6;
+  let panels = 8;
   for (let i = 1; i <= panels; i++) {
     await downloadImage(`http://admin:admin@grafana:3000/render/d-solo/pMEd7m0Mz/cadvisor-exporter?orgId=1&from=${startDate.getTime()}&to=${endDate.getTime}&panelId=${i}&width=1000&height=500`, `${dir}/panel-${i}.png`);
   }

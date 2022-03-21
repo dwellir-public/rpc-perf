@@ -23,7 +23,7 @@
   "fiscalYearStartMonth": 0,
   "gnetId": 14282,
   "graphTooltip": 0,
-  "iteration": 1647804189343,
+  "iteration": 1647852911678,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -49,10 +49,6 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -65,9 +61,9 @@
       "id": 1,
       "legend": {
         "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": true,
+        "avg": false,
+        "current": true,
+        "max": false,
         "min": false,
         "rightSide": true,
         "show": true,
@@ -91,7 +87,12 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total{instance=~\"$host\",name=~\"$container\",name=~\".+\"}[5m])) by (name) *100",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": true,
+          "expr": "sum(container_cpu_usage_seconds_total{name=\"substrate_node\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "{{name}}",
@@ -100,7 +101,7 @@
       ],
       "thresholds": [],
       "timeRegions": [],
-      "title": "CPU Usage",
+      "title": "CPU Usage Sum",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -115,7 +116,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:606",
-          "format": "percent",
+          "format": "s",
           "logBase": 1,
           "show": true
         },
@@ -144,7 +145,285 @@
         "y": 8
       },
       "hiddenSeries": false,
-      "id": 6,
+      "id": 2,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null as zero",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.4.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": true,
+          "expr": "container_cpu_usage_seconds_total{name=\"substrate_node\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{name}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "CPU Usage",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:606",
+          "format": "s",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:607",
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "hiddenSeries": false,
+      "id": 3,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null as zero",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.4.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": true,
+          "expr": "sum(container_cpu_user_seconds_total{name=\"substrate_node\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{name}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "User CPU Usage",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:606",
+          "format": "s",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:607",
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 22
+      },
+      "hiddenSeries": false,
+      "id": 4,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null as zero",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.4.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": true,
+          "expr": "sum(container_cpu_cfs_throttled_seconds_total{name=~\"substrate_node\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{name}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "CPU Throttles",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:606",
+          "format": "s",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:607",
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      },
+      "id": 83,
+      "panels": [],
+      "title": "Memory",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 30
+      },
+      "hiddenSeries": false,
+      "id": 5,
       "legend": {
         "alignAsTable": true,
         "avg": true,
@@ -178,110 +457,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "exemplar": true,
-          "expr": "sum(rate(container_cpu_cfs_throttled_seconds_total{instance=~\"$host\",name=~\"$container\",name=~\".+\"}[5m])) by (name) *100",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "{{name}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "CPU Throttles",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:606",
-          "format": "percent",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:607",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "collapsed": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 15
-      },
-      "id": 83,
-      "panels": [],
-      "title": "Memory",
-      "type": "row"
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 16
-      },
-      "hiddenSeries": false,
-      "id": 2,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null as zero",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "8.4.3",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "sum(container_memory_rss{instance=~\"$host\",name=~\"$container\",name=~\".+\"}) by (name)",
+          "expr": "sum(container_memory_rss{name=~\"substrate_node\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "{{name}}",
@@ -325,20 +501,16 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 16
+        "y": 30
       },
       "hiddenSeries": false,
-      "id": 3,
+      "id": 6,
       "legend": {
         "alignAsTable": true,
         "avg": true,
@@ -367,7 +539,12 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(container_memory_cache{instance=~\"$host\",name=~\"$container\",name=~\".+\"}) by (name)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": true,
+          "expr": "sum(container_memory_cache{name=~\"substrate_node\"}) ",
           "hide": false,
           "interval": "",
           "legendFormat": "{{name}}",
@@ -416,7 +593,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 38
       },
       "id": 20,
       "panels": [],
@@ -428,20 +605,16 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 25
+        "y": 39
       },
       "hiddenSeries": false,
-      "id": 4,
+      "id": 7,
       "legend": {
         "alignAsTable": true,
         "avg": true,
@@ -472,7 +645,12 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_network_receive_bytes_total{instance=~\"$host\",name=~\"$container\",name=~\".+\"}[5m])) by (name)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": true,
+          "expr": "sum(rate(container_network_receive_bytes_total{name=~\"substrate_node\"}[5m])) by (name)",
           "hide": false,
           "interval": "",
           "legendFormat": "{{name}}",
@@ -516,20 +694,16 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 25
+        "y": 39
       },
       "hiddenSeries": false,
-      "id": 5,
+      "id": 8,
       "legend": {
         "alignAsTable": true,
         "avg": true,
@@ -558,7 +732,12 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_network_transmit_bytes_total{instance=~\"$host\",name=~\"$container\",name=~\".+\"}[5m])) by (name)",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": true,
+          "expr": "sum(rate(container_network_transmit_bytes_total{name=~\"substrate_node\"}[5m])) by (name)",
           "interval": "",
           "legendFormat": "{{name}}",
           "refId": "A"
@@ -606,7 +785,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 33
+        "y": 47
       },
       "id": 81,
       "panels": [],
@@ -621,6 +800,7 @@
       "fieldConfig": {
         "defaults": {
           "custom": {
+            "align": "auto",
             "displayMode": "auto",
             "filterable": false
           },
@@ -685,7 +865,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 34
+        "y": 48
       },
       "id": 17,
       "options": {
@@ -829,6 +1009,6 @@
   "timezone": "",
   "title": "Cadvisor exporter",
   "uid": "pMEd7m0Mz",
-  "version": 4,
+  "version": 7,
   "weekStart": ""
 }

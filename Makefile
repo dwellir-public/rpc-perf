@@ -21,4 +21,4 @@ test:
 	docker-compose --env-file ${TEST_ENV} --profile test up --abort-on-container-exit
 
 download-snapshot:
-	docker-compose run prefetch-data
+	docker-compose --env-file ${TEST_ENV} run prefetch-data
