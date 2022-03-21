@@ -24,7 +24,7 @@ In Dec 2021, we received a grant from the Kusama Treasury to further look into R
 ## Tests we did
 ..
 
-### Cpu utilization test
+### CPU utilization test
 ..
 
 ..
@@ -35,11 +35,21 @@ In Dec 2021, we received a grant from the Kusama Treasury to further look into R
 ..
 ### Peer configuration test
 ..
-
+#### Can be reduced
 ..
-
+### Linear scalability
 
 ## Conclusion
+
+### Pain points
+
+### Going forward
+
+#### Improving the toolkit
+
+#### Proper load modeling
+
+#### Allow for profiling
 ..
 
 ..
