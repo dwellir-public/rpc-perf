@@ -9,7 +9,7 @@ Rpc-perf is a framework to stresstest an RPC node for a given system configurati
 
 ## Running test on Polkadot prod node
 
-- This test will need to be in sync with polkadot network. To make the sync faster run the following command which will download the latest chain snapshot (~45G).
+- This test will need to be in sync with polkadot network. To make the sync faster run the following command which will download the latest chain snapshot (~45G). Do not run this once you have synced the chain as it could corrupt the chain database.
 `make download-snapshot`
 
 - Rebuild test client when code changes or new code is pulled from repository
