@@ -18,7 +18,7 @@ Minimum hardware requirement: CPU with 4 cores and 8 gb memory
 Recommended hardware requirements: CPU with 8 cores and 16b memory
 
 ## Installation 
-This framework has been tested on Linux Ubuntu 20.04 with Python v3.8.10, Docker V and Docker-Compose v1.29.2.
+This framework has been tested on Linux Ubuntu 20.04 with Python v3.8.10, Docker 20.10.13 and Docker Compose v1.29.2.
 
 1) Install [Python3](https://www.python.org/downloads/).
 2) Install [Docker Enginee](https://docs.docker.com/engine/install/).
