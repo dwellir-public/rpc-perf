@@ -16,7 +16,7 @@ services:
         "--ws-external",
         "--rpc-external",
         "--rpc-cors", "all",
-        "--pruning=1000",
+        "--pruning=2000",
         "--prometheus-external",
         "--db-cache=${NODE_DB_CACHE_IN_MB}",
         "--ws-max-connections=1000",
@@ -110,7 +110,7 @@ services:
 
   prefetch-data:
     image: alpine
-    command: sh -c "apk --no-cache add curl tar lz4 && mkdir -p rocksdb/.local/share/polkadot/chains/polkadot && curl -o - -L https://ksm-rocksdb.polkashots.io/snapshot | lz4 -c -d - | tar -x -C rocksdb/.local/share/polkadot/chains/polkadot"
+    command: sh -c "apk --no-cache add curl tar lz4 && mkdir -p rocksdb/.local/share/polkadot/chains/ksmcc3 && curl -o - -L https://ksm-rocksdb.polkashots.io/snapshot | lz4 -c -d - | tar -x -C rocksdb/.local/share/polkadot/chains/polkadot"
     volumes:
       - database:/rocksdb
     profiles:
@@ -118,8 +118,5 @@ services:
 
 volumes:
   database:
-  devdb:
   prometheus_data:
   grafana_data:
-
-
