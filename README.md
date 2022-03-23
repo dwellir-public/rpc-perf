@@ -23,10 +23,12 @@ This framework has been tested on Linux Ubuntu 20.04 with Python v3.8.10, Docker
 1) Install [Python3](https://www.python.org/downloads/).
 2) Install [Docker Enginee](https://docs.docker.com/engine/install/).
 3) Install [Docker Compose](https://docs.docker.com/compose/install/).
+4) If you don't want to run Docker Compose as `sudo` you can follow this [guide](https://docs.docker.com/engine/install/linux-postinstall/).
 4) Clone this RPC-perf repository.
 
 
 ## Running test on Kusama production node
+
 
 - To run a test you need to have a Kusama relay chain in synchronization. To make the synchronize faster run the following command which will download the latest chain snapshot (~95G). Do not run this command after you have synchronized the chain as it could corrupt your chain database.
 
@@ -43,3 +45,7 @@ This framework has been tested on Linux Ubuntu 20.04 with Python v3.8.10, Docker
 - To run tests with custom environment, define and pass an environment file.
 
 `make test TEST_ENV=.env.low-cache-test`
+
+- If you need to re-download the snapshot of the chain, please first run
+`docker-compose down -v`
+then run `make download-snapshot.
