@@ -22,7 +22,8 @@ services:
         "--ws-max-connections=1000",
         "--unsafe-pruning",
         "--in-peers=${NODE_IN_PEERS}",
-        "--out-peers=${NODE_OUT_PEERS}"
+        "--out-peers=${NODE_OUT_PEERS}",
+        "--chain", "kusama"
     ]
     deploy:
       resources:
@@ -109,7 +110,7 @@ services:
 
   prefetch-data:
     image: alpine
-    command: sh -c "apk --no-cache add curl tar lz4 && mkdir -p rocksdb/.local/share/polkadot/chains/polkadot && curl -o - -L https://dot-rocksdb.polkashots.io/snapshot | lz4 -c -d - | tar -x -C rocksdb/.local/share/polkadot/chains/polkadot"
+    command: sh -c "apk --no-cache add curl tar lz4 && mkdir -p rocksdb/.local/share/polkadot/chains/polkadot && curl -o - -L https://ksm-rocksdb.polkashots.io/snapshot | lz4 -c -d - | tar -x -C rocksdb/.local/share/polkadot/chains/polkadot"
     volumes:
       - database:/rocksdb
     profiles:
