@@ -10,4 +10,4 @@ RUN yarn
 COPY . .
 
 EXPOSE 8080
-CMD [ "node", "start.js" ]
+CMD [ "node","--max_old_space_size=${TEST_CLIENT_MEMORY_IN_MB}", "start.js" ]

@@ -74,8 +74,6 @@ async function fundAccounts(api) {
 }
 
 
-
-
 async function simulateTransfers(api, connectionID) {
   let transfers = 0;
   while (true) {
