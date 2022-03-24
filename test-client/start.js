@@ -9,15 +9,21 @@ import unirest from 'unirest';
 
 
 const ADDRESS = process.env.WS_ADDRESS || 'ws://127.0.0.1:9944';
-const BASE_CONNECTIONS = process.env.CONCURRENT_CONNECTIONS_BASE || 5;
-const PEAK_CONNECTIONS = process.env.CONCURRENT_CONNECTIONS_PEAK || 100;
+const MAX_CONNECTIONS = process.env.CONCURRENT_CONNECTIONS_MAX || 100;
 const WAIT_TIME = process.env.CONCURRENT_CONNECTIONS_WAIT_TIME_IN_SEC || 1;
 const TOTAL_REQ = process.env.TOTAL_REQUESTS || 1000;
 const TOTAL_BLOCKS = 256;
-const TEST_DIR = process.env.TEST_DIR || 'misc';
+const TEST_DIR = process.env.TEST_DIR || 'default';
+const NODE_MEM = process.env.NODE_MEM;
+const NODE_CPUS = process.env.NODE_CPUS;
+const NODE_DB_CACHE = process.env.NODE_DB_CACHE_IN_MB;
+const NODE_IN_PEERS = process.env.NODE_IN_PEERS;
+const NODE_OUT_PEERS = process.env.NODE_OUT_PEERS;
 
 const QUERY = {
-  CPU_USAGE: "sum(container_cpu_usage_seconds_total{name=\"substrate_node\"})"
+  CPU_USAGE: "sum(container_cpu_usage_seconds_total{name=\"substrate_node\"})",
+  CPU_USAGE_PER_CPU: "container_cpu_usage_seconds_total{name=\"substrate_node\"}",
+
 }
 
 // Execute script
@@ -33,13 +39,11 @@ async function main() {
   const startBlock = endBlock - TOTAL_BLOCKS;
 
   let startDate = new Date();
-  let baseConnections = Number.parseInt(BASE_CONNECTIONS, 10);
   let waitTime = Number.parseInt(WAIT_TIME, 10);
-  let peakConnections = Number.parseInt(PEAK_CONNECTIONS, 10);
+  let maxConnections = Number.parseInt(MAX_CONNECTIONS, 10);
   let totalRequests = Number.parseInt(TOTAL_REQ, 10);
   let requestsServed = 0;
-  let connToAdd = baseConnections;
-  let requestsPerConn = Math.ceil(totalRequests / peakConnections);
+  let requestsPerConn = Math.ceil(totalRequests / maxConnections);
 
   let info = {
     counter: 0,
@@ -53,14 +57,14 @@ async function main() {
 
   // initialize users
   let users = [];
-  for (let i = 0; i < peakConnections; i++) {
+  for (let i = 0; i < maxConnections; i++) {
     const provider = new WsProvider(ADDRESS);
     users.push(await ApiPromise.create({ provider: provider }));
   }
 
   // simulate users until all the requests are served
   while (requestsServed < totalRequests) {
-    connToAdd = rampUpConnectionCount(info.connections, peakConnections);
+    let connToAdd = rampUpConnectionCount(info.connections, maxConnections);
     // make more users active
     for (let i = 0; i < connToAdd; i++) {
       let requestsToServe = Math.min(requestsPerConn, totalRequests - requestsServed);
@@ -122,7 +126,7 @@ async function sleep(seconds) {
   await new Promise(r => setTimeout(r, seconds * 1000));
 }
 
-async function fetchMetrics(url, filename) {
+async function dumpMetrics(url, filename) {
   return new Promise((resolve, reject) => {
     fetch(url)
       .then(response => response.text())
@@ -138,17 +142,39 @@ async function recordResults(startDate, endDate) {
   let dir = `./etc/tests/${currentRun}`
   fs.mkdirSync(dir, { recursive: true })
 
-  await fetchMetrics('http://cadvisor:8080/metrics', `${dir}/metrics-cadvisor.txt`);
-  await fetchMetrics('http://node_exporter:9100/metrics', `${dir}/metrics-node-exporter.txt`);
-  await fetchMetrics('http://substrate_node:9615/metrics', `${dir}/metrics-polkadot.txt`);
+  await dumpMetrics('http://cadvisor:8080/metrics', `${dir}/metrics-cadvisor.txt`);
+  await dumpMetrics('http://node_exporter:9100/metrics', `${dir}/metrics-node-exporter.txt`);
+  await dumpMetrics('http://substrate_node:9615/metrics', `${dir}/metrics-polkadot.txt`);
   let panels = 8;
   for (let i = 1; i <= panels; i++) {
     await downloadImage(`http://admin:admin@grafana:3000/render/d-solo/pMEd7m0Mz/cadvisor-exporter?orgId=1&from=${startDate.getTime()}&to=${endDate.getTime}&panelId=${i}&width=1000&height=500`, `${dir}/panel-${i}.png`);
   }
 
-  let cpu_usage = await getMetricRange(QUERY.CPU_USAGE, startDate.getTime(), endDate.getTime());
+  let sumCpuUsage = await getMetricRange(QUERY.CPU_USAGE, startDate.getTime(), endDate.getTime());
+  let cpuUsage = await getMetricRange(QUERY.CPU_USAGE_PER_CPU, startDate.getTime(), endDate.getTime());
+  let stats = {
+    start: startDate,
+    end: endDate,
+    result: {
+      CpuUsageSum: sumCpuUsage,
+      cpuUsage: cpuUsage
+    },
+    type: TEST_DIR,
+    config: {
+      concurrency: Number.parseInt(MAX_CONNECTIONS, 10),
+      totalRequests: Number.parseInt(TOTAL_REQ, 10),
+      nodeMemory: NODE_MEM,
+      nodeCPU: NODE_CPUS,
+      nodeDBCache: NODE_DB_CACHE,
+      nodePeersIn: Number.parseInt(NODE_IN_PEERS, 10),
+      nodePeersOut: Number.parseInt(NODE_OUT_PEERS, 10)
+    }
+
+  };
+
+  writeFile(JSON.stringify(stats), `${dir}/key-metrics.json`);
   log.info(`Results recorded at ${currentRun}`);
-  log.info(`CPU Usage sec ${cpu_usage} from start: ${startDate.getTime() / 1000} and end: ${endDate.getTime() / 1000}`);
+  log.info(`CPU Usage sec ${sumCpuUsage} from start: ${startDate.getTime() / 1000} and end: ${endDate.getTime() / 1000}`);
 
   process.exit();
 }
@@ -188,12 +214,12 @@ function getMetric(metricName, time) {
         if (res.error) reject;
         else {
           let result = res.body.data.result;
-          if (result.length == 1) {
-            resolve(result[0].value[1]);
+          if (result.length > 0) {
+            resolve(result.map(r => r.value[1]));
           }
           else {
             log.info("Metric not found");
-            resolve("0");
+            resolve([]);
           }
         }
       })
@@ -204,7 +230,16 @@ function getMetric(metricName, time) {
 async function getMetricRange(metricName, startTime, endTime) {
   let start = await getMetric(metricName, startTime);
   let end = await getMetric(metricName, endTime);
-  let res = end - start;
+  let res = [];
+  for (let i = 0; i < end.length; i++) {
+    if (i < start.length) {
+      res.push(end[i] - start[i]);
+    }
+    else {
+      res.push(end[i]);
+    }
+  }
+
   return res;
 }
 
