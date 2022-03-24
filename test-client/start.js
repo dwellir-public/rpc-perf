@@ -5,6 +5,7 @@ import * as log from 'fancylog';
 import fetch from "node-fetch";
 import * as fs from 'fs';
 import axios from 'axios';
+import unirest from 'unirest';
 
 
 const ADDRESS = process.env.WS_ADDRESS || 'ws://127.0.0.1:9944';
@@ -15,12 +16,15 @@ const TOTAL_REQ = process.env.TOTAL_REQUESTS || 1000;
 const TOTAL_BLOCKS = 256;
 const TEST_DIR = process.env.TEST_DIR || 'misc';
 
+const QUERY = {
+  CPU_USAGE: "sum(container_cpu_usage_seconds_total{name=\"substrate_node\"})"
+}
 
 // Execute script
 async function main() {
   const provider = new WsProvider(ADDRESS);
   const api = await ApiPromise.create({ provider: provider });
-  
+
   // wait for chain to sync
   await chainSync(api);
 
@@ -36,7 +40,7 @@ async function main() {
   let requestsServed = 0;
   let connToAdd = baseConnections;
   let requestsPerConn = Math.ceil(totalRequests / peakConnections);
-  
+
   let info = {
     counter: 0,
     connections: 0,
@@ -63,12 +67,12 @@ async function main() {
       traverseBlocks(users[info.connections], startBlock, endBlock, requestsToServe, info).catch(error => log.error(error));
       info.connections++;
       requestsServed += requestsToServe;
-    }   
-    
+    }
+
     // wait before ramping up the users
     await sleep(waitTime);
   }
-    
+
 }
 
 // show progress twice every minute
@@ -86,12 +90,12 @@ async function progress(info) {
 function rampUpConnectionCount(currentConnections, maxConnections) {
   // start with 10% of connections
   if (currentConnections == 0) {
-    return Math.floor(maxConnections / 10);
+    return Math.max(5, Math.floor(maxConnections / 10));
   }
 
   // double the connections every time
   let newConnectionsToAdd = currentConnections;
-     
+
   return Math.min(newConnectionsToAdd, maxConnections - currentConnections);
 }
 
@@ -127,7 +131,6 @@ async function fetchMetrics(url, filename) {
         resolve()
       });
   })
-
 }
 
 async function recordResults(startDate, endDate) {
@@ -142,7 +145,11 @@ async function recordResults(startDate, endDate) {
   for (let i = 1; i <= panels; i++) {
     await downloadImage(`http://admin:admin@grafana:3000/render/d-solo/pMEd7m0Mz/cadvisor-exporter?orgId=1&from=${startDate.getTime()}&to=${endDate.getTime}&panelId=${i}&width=1000&height=500`, `${dir}/panel-${i}.png`);
   }
+
+  let cpu_usage = await getMetricRange(QUERY.CPU_USAGE, startDate.getTime(), endDate.getTime());
   log.info(`Results recorded at ${currentRun}`);
+  log.info(`CPU Usage sec ${cpu_usage} from start: ${startDate.getTime() / 1000} and end: ${endDate.getTime() / 1000}`);
+
   process.exit();
 }
 
@@ -166,6 +173,39 @@ async function downloadImage(url, filepath) {
       .on('error', reject)
       .once('close', () => resolve(filepath));
   });
+}
+
+function getMetric(metricName, time) {
+  return new Promise((resolve, reject) => {
+    unirest("POST", "http://prometheus:9090/api/v1/query")
+      .headers({
+        "content-type": "application/x-www-form-urlencoded"
+      })
+      .form({
+        "query": metricName,
+        "time": time / 1000
+      }).end((res) => {
+        if (res.error) reject;
+        else {
+          let result = res.body.data.result;
+          if (result.length == 1) {
+            resolve(result[0].value[1]);
+          }
+          else {
+            log.info("Metric not found");
+            resolve("0");
+          }
+        }
+      })
+
+  })
+}
+
+async function getMetricRange(metricName, startTime, endTime) {
+  let start = await getMetric(metricName, startTime);
+  let end = await getMetric(metricName, endTime);
+  let res = end - start;
+  return res;
 }
 
 main().catch(console.error);
