@@ -9,16 +9,16 @@ export CURRENT_UID
 export CURRENT_GID
 
 build: 
-	docker-compose --env-file ${TEST/.env} --profile test build
+	docker-compose --env-file ${TEST}/.env --profile test build
 
 pull:
-	docker-compose --env-file ${TEST/.env} pull
+	docker-compose --env-file ${TEST}/.env pull
 
 up: 
-	docker-compose --env-file ${TEST/.env} up
+	docker-compose --env-file ${TEST}/.env up
 
 test: 
-	docker-compose --env-file ${TEST/.env} --profile test up --abort-on-container-exit
+	docker-compose --env-file ${TEST}/.env --profile test up --abort-on-container-exit
 
 download-snapshot:
-	docker-compose --env-file ${TEST/.env} run prefetch-data
+	docker-compose --env-file ${TEST}/.env run prefetch-data
