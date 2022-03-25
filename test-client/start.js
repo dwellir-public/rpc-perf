@@ -153,7 +153,7 @@ async function recordResults(startDate, endDate) {
   let sumCpuUsage = await getMetricRange(QUERY.CPU_USAGE, startDate.getTime(), endDate.getTime());
   let cpuUsage = await getMetricRange(QUERY.CPU_USAGE_PER_CPU, startDate.getTime(), endDate.getTime());
   let totalRequests = Number.parseInt(TOTAL_REQ, 10);
-  let cpuTimePerRequest = (sumCpuUsage*1000)/totalRequests;
+  let cpuTimePerRequest = (sumCpuUsage * 1000) / totalRequests;
 
   let stats = {
     start: startDate,
@@ -231,19 +231,11 @@ function getMetric(metricName, time) {
 
 async function getMetricRange(metricName, startTime, endTime) {
   let start = await getMetric(metricName, startTime);
-  let end = await getMetric(metricName, endTime);
-  let res = [];
-  for (let i = 0; i < end.length; i++) {
-    if (i < start.length) {
-      log.warn(`Expected no metric at start of the test but found start value ${start[i]} at index ${i}.`)
-      res.push(end[i] - start[i]);
-    }
-    else {
-      res.push(end[i]);
-    }
+  if (start.length > 0) {
+    log.warn(`Expected no metric at start of the test but found start value ${start[i]} at index ${i}.`)
   }
 
-  return res;
+  return await getMetric(metricName, endTime);
 }
 
 main().catch(console.error);
