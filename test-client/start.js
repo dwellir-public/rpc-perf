@@ -16,7 +16,7 @@ const TOTAL_BLOCKS = 256;
 const TEST_DIR = process.env.TEST_DIR || 'default';
 const NODE_MEM = process.env.NODE_MEM;
 const NODE_CPU_SET = process.env.NODE_CPU_SET;
-const NODE_DB_CACHE = process.env.NODE_DB_CACHE_IN_MB;
+const NODE_DB_CACHE = process.env.NODE_DB_CACHE;
 const NODE_IN_PEERS = process.env.NODE_IN_PEERS;
 const NODE_OUT_PEERS = process.env.NODE_OUT_PEERS;
 
@@ -232,7 +232,7 @@ function getMetric(metricName, time) {
 async function getMetricRange(metricName, startTime, endTime) {
   let start = await getMetric(metricName, startTime);
   if (start.length > 0) {
-    log.warn(`Expected no metric at start of the test but found start value ${start[i]} at index ${i}.`)
+    log.warn(`Expected no metric at start of the test but found start value ${start}.`)
   }
 
   return await getMetric(metricName, endTime);

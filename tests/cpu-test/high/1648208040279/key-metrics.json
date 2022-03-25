@@ -1,1 +1,29 @@
-{"start":"2022-03-25T11:34:00.279Z","end":"2022-03-25T11:36:30.417Z","result":{"CpuUsageSum":["75.750451516"],"cpuUsage":["10.07630529","9.848121744","9.624354099","8.794358383","10.078320744","9.560877936","9.245522634","8.522590686"],"cpuTimePerRequest":"7.5750451516 ms"},"type":"cpu-test/high","config":{"concurrency":50,"totalRequests":10000,"nodeMemory":"5120M","nodeCpuSet":"0-7","nodePeersIn":25,"nodePeersOut":25}}
+{
+    "start": "2022-03-25T11:34:00.279Z",
+    "end": "2022-03-25T11:36:30.417Z",
+    "result": {
+        "CpuUsageSum": [
+            "75.750451516"
+        ],
+        "cpuUsage": [
+            "10.07630529",
+            "9.848121744",
+            "9.624354099",
+            "8.794358383",
+            "10.078320744",
+            "9.560877936",
+            "9.245522634",
+            "8.522590686"
+        ],
+        "cpuTimePerRequest": "7.5750451516 ms"
+    },
+    "type": "cpu-test/high",
+    "config": {
+        "concurrency": 50,
+        "totalRequests": 10000,
+        "nodeMemory": "5120M",
+        "nodeCpuSet": "0-7",
+        "nodePeersIn": 25,
+        "nodePeersOut": 25
+    }
+}
