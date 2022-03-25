@@ -25,13 +25,10 @@ services:
         "--out-peers=${NODE_OUT_PEERS}",
         "--chain", "kusama"
     ]
-    deploy:
-      resources:
-        limits:
-          cpus: "${NODE_CPUS}"
-          memory: "${NODE_MEM}"
+    cpuset: ${NODE_CPU_SET}
 
   node_exporter:
+    container_name: node_exporter
     image: prom/node-exporter
     volumes:
       - /proc:/host/proc:ro
@@ -46,6 +43,7 @@ services:
       - 9100:9100
       
   cadvisor:
+    container_name: cadvisor
     image: gcr.io/cadvisor/cadvisor:v0.36.0
     ports:
       - "8080:8080"
@@ -73,6 +71,7 @@ services:
       - "9090:9090"
 
   grafana:
+    container_name: grafana
     image: grafana/grafana
     user: "472"
     depends_on:
@@ -86,11 +85,13 @@ services:
       - ./grafana/config.monitoring
 
   renderer:
+    container_name: renderer
     image: grafana/grafana-image-renderer
     ports:
       - "8081:8081"
 
   test_client:
+    container_name: test_client
     build: ./test-client
     user: "${CURRENT_UID}:${CURRENT_GID}"
     depends_on:
@@ -106,7 +107,7 @@ services:
       TOTAL_REQUESTS: ${TOTAL_REQUESTS}
       TEST_DIR: ${TEST_DIR}
       NODE_MEM: ${NODE_MEM}
-      NODE_CPUS: ${NODE_CPUS}
+      NODE_CPU_SET: ${NODE_CPU_SET}
       NODE_DB_CACHE: ${NODE_DB_CACHE_IN_MB}
       NODE_IN_PEERS: ${NODE_IN_PEERS}
       NODE_OUT_PEERS: ${NODE_OUT_PEERS}      
@@ -120,6 +121,6 @@ services:
       - download-snapshot
 
 volumes:
-  database:
+  database: 
   prometheus_data:
   grafana_data:

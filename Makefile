@@ -17,8 +17,13 @@ pull:
 up: 
 	docker-compose --env-file ${TEST}/.env up
 
-test: 
+test: down
 	docker-compose --env-file ${TEST}/.env --profile test up --abort-on-container-exit
+
+down: 
+	docker-compose down
+	docker rm -f substrate_node node_exporter cadvisor prometheus grafana renderer test_client	
+	docker volume rm rpc-perf_grafana_data rpc-perf_prometheus_data
 
 download-snapshot:
 	docker-compose --env-file ${TEST}/.env run prefetch-data

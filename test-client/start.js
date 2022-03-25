@@ -15,7 +15,7 @@ const TOTAL_REQ = process.env.TOTAL_REQUESTS || 1000;
 const TOTAL_BLOCKS = 256;
 const TEST_DIR = process.env.TEST_DIR || 'default';
 const NODE_MEM = process.env.NODE_MEM;
-const NODE_CPUS = process.env.NODE_CPUS;
+const NODE_CPU_SET = process.env.NODE_CPU_SET;
 const NODE_DB_CACHE = process.env.NODE_DB_CACHE_IN_MB;
 const NODE_IN_PEERS = process.env.NODE_IN_PEERS;
 const NODE_OUT_PEERS = process.env.NODE_OUT_PEERS;
@@ -152,24 +152,27 @@ async function recordResults(startDate, endDate) {
 
   let sumCpuUsage = await getMetricRange(QUERY.CPU_USAGE, startDate.getTime(), endDate.getTime());
   let cpuUsage = await getMetricRange(QUERY.CPU_USAGE_PER_CPU, startDate.getTime(), endDate.getTime());
+  let totalRequests = Number.parseInt(TOTAL_REQ, 10);
+  let cpuTimePerRequest = totalRequests/(sumCpuUsage*1000) 
+
   let stats = {
     start: startDate,
     end: endDate,
     result: {
       CpuUsageSum: sumCpuUsage,
-      cpuUsage: cpuUsage
+      cpuUsage: cpuUsage,
+      cpuTimePerRequest: `${cpuTimePerRequest} ms`
     },
     type: TEST_DIR,
     config: {
       concurrency: Number.parseInt(MAX_CONNECTIONS, 10),
       totalRequests: Number.parseInt(TOTAL_REQ, 10),
       nodeMemory: NODE_MEM,
-      nodeCPU: NODE_CPUS,
+      nodeCpuSet: NODE_CPU_SET,
       nodeDBCache: NODE_DB_CACHE,
       nodePeersIn: Number.parseInt(NODE_IN_PEERS, 10),
       nodePeersOut: Number.parseInt(NODE_OUT_PEERS, 10)
     }
-
   };
 
   writeFile(JSON.stringify(stats), `${dir}/key-metrics.json`);
@@ -218,7 +221,6 @@ function getMetric(metricName, time) {
             resolve(result.map(r => r.value[1]));
           }
           else {
-            log.info("Metric not found");
             resolve([]);
           }
         }
@@ -233,6 +235,7 @@ async function getMetricRange(metricName, startTime, endTime) {
   let res = [];
   for (let i = 0; i < end.length; i++) {
     if (i < start.length) {
+      log.warn(`Expected no metric at start of the test but found start value ${start[i]} at index ${i}.`)
       res.push(end[i] - start[i]);
     }
     else {
