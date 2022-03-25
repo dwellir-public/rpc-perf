@@ -1,0 +1,1 @@
+{"start":"2022-03-25T07:36:32.532Z","end":"2022-03-25T07:39:02.660Z","result":{"CpuUsageSum":["52.178171537"],"cpuUsage":["5.218352224","6.096642415","5.704138377","7.59607577","6.141031184","7.223434493","6.665188803","7.533308271"]},"type":"peers-test/low","config":{"concurrency":50,"totalRequests":10000,"nodeMemory":"5120M","nodePeersIn":2,"nodePeersOut":2}}
