@@ -153,7 +153,7 @@ async function recordResults(startDate, endDate) {
   let sumCpuUsage = await getMetricRange(QUERY.CPU_USAGE, startDate.getTime(), endDate.getTime());
   let cpuUsage = await getMetricRange(QUERY.CPU_USAGE_PER_CPU, startDate.getTime(), endDate.getTime());
   let totalRequests = Number.parseInt(TOTAL_REQ, 10);
-  let cpuTimePerRequest = totalRequests/(sumCpuUsage*1000) 
+  let cpuTimePerRequest = (sumCpuUsage*1000)/totalRequests;
 
   let stats = {
     start: startDate,
