@@ -1,0 +1,30 @@
+{
+    "start": "2022-03-28T06:23:42.838Z",
+    "end": "2022-03-28T06:51:27.393Z",
+    "result": {
+        "CpuUsageSum": [
+            "951.6201809659999"
+        ],
+        "cpuUsage": [
+            "222.732787333",
+            "244.276133327",
+            "245.710318117",
+            "238.146540228",
+            "0.258939903",
+            "0.155792155",
+            "0.072449377",
+            "0.267220526"
+        ],
+        "cpuTimePerRequest": "9.51620180966 ms"
+    },
+    "type": "concurrency-test/high",
+    "config": {
+        "concurrency": 150,
+        "totalRequests": 100000,
+        "nodeMemory": "5120M",
+        "nodeCpuSet": "0-3",
+        "nodeDBCache": "128",
+        "nodePeersIn": 25,
+        "nodePeersOut": 25
+    }
+}

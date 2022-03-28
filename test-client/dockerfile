@@ -10,4 +10,4 @@ RUN yarn
 COPY . .
 
 EXPOSE 8080
-CMD [ "node","--max_old_space_size=8192", "start.js" ]
+CMD [ "node","--max_old_space_size=12288", "start.js" ]
