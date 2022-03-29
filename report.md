@@ -74,7 +74,7 @@ A batch of tests were performed whith **8 cores** active and another with **2 co
 
 Furthermore, the charts of CPU activity captured during the execution confirmed that the CPU core usage is  balanced.
 
-![image](https://github.com/dwellir-public/rpc-perf/blob/main/tests/cpu-test/high/1648231843939/panel-2.png)
+![panel-2](https://user-images.githubusercontent.com/412837/160618508-6fd73d32-0fdb-451a-8458-4ee62c3fc6f8.png)
 
 The test confirms that the RPC Node uses all cores in a balanced way, and that the penalty of having more cores active does not seem significant. 
 
@@ -107,7 +107,7 @@ We can clearly see how CPU time invested per request grows as concurrent users g
 
 However we see that our test runs fall into 2 different groups. There are "good runs" that seems to scale linearly, but some other runs are way worse, see chart below:
 
-![image](https://github.com/dwellir-public/rpc-perf/blob/main/cvsCharts/ConcurrencyTestChart.png)
+![ConcurrencyTestChart](https://user-images.githubusercontent.com/412837/160618425-b3dc3445-a623-4d83-b27c-ac654b1a20f6.png)
 
 We find it very strange that **100K** requets by 400 simulated users could be served in **8.5ms** per request while a different run is executed with **20.3ms** per request, in the  second run requests are **240%** more expensive to serve. 
 
