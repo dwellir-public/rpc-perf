@@ -60,7 +60,7 @@ Our initial minimum viable performance testing toolkit is available in the follo
 The performance toolkit is prototypal yet allowed us to identify, mitigate and/or resolve the performance issues identified initially:
 
 ## Performed Tests
-The main metric that we collect to asses how the RPC node performed is accumulated CPU time (user + system) divided by the total number of requests served during the test. All tests will serve a standarized workload. 
+The main metric that we collected to asses how the RPC node performed is accumulated CPU time (user + system) divided by the total number of requests served during the test. All tests will run a standarized workload. 
 
 For example we can say that a given test configuration spent 6ms of CPU time per request, while another spent 8ms per request. This allows us to get an idea of relative performance of different node setups, node versions, underlying platform configurations, etc.
 
@@ -81,7 +81,7 @@ The test confirms that the RPC Node uses all cores in a balanced way, and that t
 ### Database Cache Test
 We designed the  `cache-test` to measure the potential the impact of database cache adjustments in production.
 
-Since our standardized workload is not too rich (see next steps below) we decided to not only increase the default cache size but also reduce the default cache to test the behavior of the node under different cache settings, We tested with **32Mb** versus **1024Mb**. 
+Since our standardized workload is not too rich (see next steps below) we decided to not only increasing the default cache size but also reducing the default cache to test the behavior of the node under different cache settings, We tested with **32Mb** versus **1024Mb**. 
 
 With **1024Mb** of database cache the standarized workload was served investing **5ms** of CPU time with request, while with **32Mb** CPU time per request was **26ms**.
 
@@ -99,15 +99,17 @@ The test results confirm some gain of performance.
 
 In line with the feedback received by operators we designed **concurrency-test** to be able to test for scalability.
 
-By increasing the number of simulated users or concurrent connections there may be a point in which the overhead becomes too expensive and the same workload is served with much higher CPU investment per request. Basically we expect to see a point in which the node "degrades" and provides a sub suboptimal service. 
+By increasing the number of simulated users or concurrent connections there may be a point in which the overhead becomes too expensive and the same workload is served with much higher CPU investment per request. So, we expect to see a point in which the node "degrades" and provides a sub suboptimal service. 
 
 We started simulating 50 concurrent users/connections and increased the number in different test runs until 400 concurrent users. In all cases the standarized workload was split among the available user connections.
 
-We can clearly see how CPU time invested per request grows as concurrent users grow. Some test runs with 400 concurrent users saw an investment on CPU per request 300% higher than with lower concurrency, which supports the claim that scalability is not lineal.
+We can clearly see how CPU time invested per request grows as concurrent users grow. Some test runs with 400 concurrent users saw an investment on CPU per request 250% higher than with lower concurrency, which supports the claim that scalability is not lineal.
 
-However we see that our test runs fall into 2 different groups. There are "good runs" that seems to scale linearly. But some runs are way worse.
+However we see that our test runs fall into 2 different groups. There are "good runs" that seems to scale linearly, but some other runs are way worse, see chart below:
 
 ![image](https://github.com/dwellir-public/rpc-perf/blob/main/cvsCharts/ConcurrencyTestChart.png)
+
+We find it very strange that **100K** requets by 400 simulated users could be served in **8.5ms** per request while a different run is executed with **20.3ms** per request, in the  second run requests are **240%** more expensive to serve. 
 
 We don't want to draw any conclusion at this stage from this test without first implementing a better workload model (see next steps below). 
 
@@ -117,7 +119,9 @@ Although the toolkit is prototypal it was effective in gaining an understanding 
 
 [Dwellir](https://dwellir.com/)'s initial performance issues have been seriously mitigated by a structured and reproducible testing approach. We could measure each identified point, the effect of tunning performance parameters. In the case of CPU Core utilization we could identify that the cause of the issue was not related to the RPC node. 
 
-The linear scalability test is inconclusive for us at this stage, our workload modeling is too simplistic to draw a conclusion. With a better workload model and interface to profiling (see next steps below) we could try to test if the node performance is degrading at some point.   
+The higher Database cache setting was a big performance increase, in fact now it is default setting on new node software releases. We found that the lower p2p connections had a great impact in load balanced deployments, as the resulting number of connections is multiplied by the number of load balanced nodes. 
+
+The linear scalability test is inconclusive for us at this stage, our workload modeling is too simplistic to draw a conclusion. We would like to re-test with a better workload model and interface to profiling. It is very encouraging to see that some runs were found to scale linearly to 400 concurrent connections. Would be nice to find an explanation for the executions that came back with way worse metrics.
 
 We believe there is significant potential in continuing the development of this performance toolkit. After our experience we consider that the following next steps would be appropriate:
 
