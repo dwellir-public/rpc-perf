@@ -12,7 +12,7 @@ In this repository there are 4 sample custom environments.
 
 When a test has been completed the result can be found in the folder `tests`.
 
-## Hardware minimum requirments and recommondations
+## Hardware minimum requirements and recommendations
 Minimum hardware requirement: CPU with 4 cores and 8 gb memory
 
 Recommended hardware requirements: CPU with 8 cores and 16b memory
@@ -66,3 +66,6 @@ These default values can be changed in the .env-files.
 - Peers: 50
 - Concurrent connections: 50
 
+### Why RPC-Perf?
+
+For details about the motivation behind this toolkit see the attached [report](./report.md).
