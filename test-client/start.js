@@ -1,5 +1,4 @@
 // Required imports
-import { traverseBlocks } from './read-blocks.js';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import * as log from 'fancylog';
 import fetch from "node-fetch";
@@ -127,6 +126,7 @@ async function sleep(seconds) {
 }
 
 async function dumpMetrics(url, filename) {
+  // download prometheus metrics in a file
   return new Promise((resolve, reject) => {
     fetch(url)
       .then(response => response.text())
@@ -142,14 +142,18 @@ async function recordResults(startDate, endDate) {
   let dir = `./etc/tests/${currentRun}`
   fs.mkdirSync(dir, { recursive: true })
 
+  // download prometheus metrics
   await dumpMetrics('http://cadvisor:8080/metrics', `${dir}/metrics-cadvisor.txt`);
   await dumpMetrics('http://node_exporter:9100/metrics', `${dir}/metrics-node-exporter.txt`);
   await dumpMetrics('http://substrate_node:9615/metrics', `${dir}/metrics-polkadot.txt`);
+  
+  // download panels from grafana
   let panels = 8;
   for (let i = 1; i <= panels; i++) {
     await downloadImage(`http://admin:admin@grafana:3000/render/d-solo/pMEd7m0Mz/cadvisor-exporter?orgId=1&from=${startDate.getTime()}&to=${endDate.getTime}&panelId=${i}&width=1000&height=500`, `${dir}/panel-${i}.png`);
   }
 
+  // calculate key metrics
   let sumCpuUsage = await getMetricRange(QUERY.CPU_USAGE, startDate.getTime(), endDate.getTime());
   let cpuUsage = await getMetricRange(QUERY.CPU_USAGE_PER_CPU, startDate.getTime(), endDate.getTime());
   let totalRequests = Number.parseInt(TOTAL_REQ, 10);
@@ -179,6 +183,7 @@ async function recordResults(startDate, endDate) {
   log.info(`Results recorded at ${currentRun}`);
   log.info(`CPU Usage sec ${sumCpuUsage} from start: ${startDate.getTime() / 1000} and end: ${endDate.getTime() / 1000}`);
 
+  // exit after recording results
   process.exit();
 }
 
@@ -191,6 +196,7 @@ function writeFile(content, filepath) {
   }
 }
 
+// downloading image at a url
 async function downloadImage(url, filepath) {
   const response = await axios({
     url,
@@ -204,6 +210,7 @@ async function downloadImage(url, filepath) {
   });
 }
 
+ // fetch prometheus metric by name
 function getMetric(metricName, time) {
   return new Promise((resolve, reject) => {
     unirest("POST", "http://prometheus:9090/api/v1/query")
@@ -236,6 +243,23 @@ async function getMetricRange(metricName, startTime, endTime) {
   }
 
   return await getMetric(metricName, endTime);
+}
+
+// traverse random blocks in the range of start and end
+async function traverseBlocks(api, start, end, totalCount, info) {
+  const length = end - start;
+  let count = 0;
+  while (count < totalCount) {
+      const randomBlock = Math.floor(Math.random() * length) + start;
+      const blockHash = await api.rpc.chain.getBlockHash(randomBlock);
+      await api.rpc.chain.getBlock(blockHash);
+      const apiAt = await api.at(blockHash);
+      await apiAt.query.system.events();
+      await apiAt.query.transactionStorage?.blockTransactions();
+      await apiAt.query.system.allExtrinsicsLen();
+      count++;
+      info.counter++;
+  }
 }
 
 main().catch(console.error);
