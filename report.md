@@ -45,7 +45,7 @@ After gaining a better understanding of the complexity of our problem we decided
 * The testing process must be unattended, as much as possible.
 * Ideally should be usable during all relevant lifecycle phases, from profiling to validating the peformance of a production platform.
 
-And must allow us to test, initially, the paint-points collected from the community.
+And must allow us to test, initially, the pain-points collected from the community.
 
 Our initial minimum viable performance testing toolkit is available in the following [git repository]() and has the following characteristics:
 
@@ -60,7 +60,7 @@ Our initial minimum viable performance testing toolkit is available in the follo
 The performance toolkit is prototypal yet allowed us to identify, mitigate and/or resolve the performance issues identified initially:
 
 ## Performed Tests
-The main metric that we collected to asses how the RPC node performed is accumulated CPU time (user + system) divided by the total number of requests served during the test. All tests will run a standarized workload. 
+The main metric that we collected to assess how the RPC node performed is accumulated CPU time (user + system) divided by the total number of requests served during the test. All tests will run a standarized workload. 
 
 For example we can say that a given test configuration spent 6ms of CPU time per request, while another spent 8ms per request. This allows us to get an idea of relative performance of different node setups, node versions, underlying platform configurations, etc.
 
@@ -155,7 +155,7 @@ Currently, a single rpc node instance is tested, however it would be desirable t
 
 #### Profiling interface
 
-To best serve the community, the toolkit should also be useful during development and profiling. For example by using the load simulation while iteracting with the profiler or by running a test plan in which memory dumps are collected for later analysis, etc.
+To best serve the community, the toolkit should also be useful during development and profiling. For example by using the load simulation while interacting with the profiler or by running a test plan in which memory dumps are collected for later analysis, etc.
 
 #### Integration with existing tools
 
