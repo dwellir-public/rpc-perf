@@ -5,7 +5,7 @@ RPC-perf is a framework to stress test an RPC node for a given system configurat
 This framework let you test the following configurations:
  - Number of concurrent connections
  - Number of peers
- - Size of DB-cache
+ - Size of database cache
  - Evaluate that all cores are performing
 
 In this repository there are 4 sample custom environments.
