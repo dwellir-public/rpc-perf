@@ -21,7 +21,7 @@ The perceived issues by node operators would fall in one of the two following ca
 - Non-lineal scalability of the service, often with an identified max number of concurrent connections, which would vary between operators, but generally would be considered  too low.
 - Perception of non-utilization of available hardware resources (CPU cores).
 
-We also received feedback from members of the community regarding node settings that could impact the node performance of the deployments:
+We also received feedback from members of the community regarding node deployment settings that could impact its performance:
 
 - database cache settings.
 - libp2p number of peer connections.
@@ -31,7 +31,7 @@ Software and Profiling specialists would also point at the following issues inhe
 - Difficulty to tune/work on performance when there isn't a clear specification of what is achievable or considered good or bad  for a given reference hardware platform.
 - Complexity to operate production infrastructure which typically involves orchestration functionality that will manage (i.e. limit) resource availability across workloads. This typically translates into the need to make "lab" tests that isolate workload from delivery platforms.
 
-Therefore it would be ideal to have a structured approach to performance testing that provide us with the capability to validate a deployment: i.e. performance within its specification or expected performance.
+Therefore it would be ideal to have a structured approach to performance testing that provide us with the capability to validate a deployment: i.e. perfors within its specification or expected performance.
 
 
 ## How to improve performance: Need for a Performance testing toolkit
@@ -40,7 +40,7 @@ After gaining a better understanding of the complexity of our problem we decided
 * Easy to use. Must be easy to deploy on any environment including a lab or a development laptop, with no particular setup process.
 * Must run well-specified test scenarios.
 * Must run well-specified test workloads.
-* Must capture relevant metrics. 
+* Must capture related metrics. 
 * All tests scenarios / workload specifications and resulting metrics must be automatically collected and easy to archive in git or a similar repository.
 * The testing process must be unattended, as much as possible.
 * Ideally it should be usable during all relevant lifecycle phases, from profiling to validating the peformance of a production platform.
@@ -68,7 +68,7 @@ For example, we can say that a given test configuration spent 6ms of CPU time pe
 
 Node operators collected telemetry on a load balanced deployment on metal that clearly showed one CPU core overloaded while the others remained healthy. Since the metal was dedicated to the RPC node deployment the node operator started to work on the hypothesis that the RPC node would not utilize cores in a balanced way.
 
-We designed `CPU-tests` to look specifically at core utilization with the goal to provide the node operator with clarity about the way in which the RPC node behaves. 
+We designed `cpu-tests` to look specifically at core utilization with the goal to provide the node operator with clarity about the way in which the RPC node behaves. 
 
 A batch of tests was performed with **8 cores** active and another with **2 cores** active.  The first set served the standardized workload investing **8ms** of CPU time per request and the second investing **7ms** of CPU time per request. 
 
@@ -87,11 +87,11 @@ With **1024Mb** of database cache the standarized workload was served investing 
 
 The result confirms that Database cache setting has a significant impact on node performance.
 ### Peer Configuration Test
-We designed **peers-test** to check the impact of the number of peers, setting of the **libp2p** protocol, on general node performance. 
+We designed **peers-test** to check the impact of the `number of peers` setting of the **libp2p** protocol on general node performance. 
 
 We tested values of **50** p2p peers versus **4** p2p peers. 
 
-With 50 peers the standardized workload was served to invest **6ms** of CPU time per request while with 4 p2p peers the required CPU time came down to **4ms**. 
+With 50 peers the standardized workload was served investing **6ms** of CPU time per request while with 4 p2p peers the required CPU time came down to **4ms**. 
 
 The test results confirm some gain in performance.
 
@@ -103,7 +103,7 @@ By increasing the number of simulated users or concurrent connections there may 
 
 We started simulating 50 concurrent users/connections and increased the number in different test runs until 400 concurrent users. In all cases, the standardized workload was split among the available user connections.
 
-We can clearly see how CPU time invested per request grows as concurrent users grow. Some test runs with 400 concurrent users saw an investment on CPU per request 250% higher than with lower concurrency, this supports the claim that scalability is not lineal.
+We can clearly see how CPU time invested per request grows as concurrent users grow. Some test runs with 400 concurrent users saw an investment on CPU per request 250% higher than with lower concurrency, which supports the claim that scalability is not lineal.
 
 However, we see that our test runs fall into 2 different groups. There are "good runs" that seems to scale linearly, but some other runs are way worse, see the chart below:
 
@@ -133,7 +133,7 @@ We recommend extending the performance toolkit with:
 
 Some of the tests involved simulating workloads under different node setups. For example cache size, peer connections, etc. It would be desirable to be able to create a plan that would involve running N tests in which parameters are been gradually changed. This would be useful to establish relationships between parameters in an automated manner.
 
-For example: Test a workload model on 50 deployments with DB cache from 128MB to 10GB. Collecting the CPU time invested per simulated request from all scenarios.
+For example: Test a workload model on 50 deployments with DB cache from 128MB to 10GB. Collecting the CPU time invested per simulated request under all scenarios.
 
 Test plans should also aggregate the collection of metrics of all the runs so that they can be charted. 
 
@@ -141,13 +141,13 @@ Execution should be automatic.
 
 #### Improved Workload Modeling
 
-Our current workload model is a minimum viable product that simply request blockchain blocks. Ideally, it should be possible to generate workloads that match those in production. I.e. they have approximate blends of requests, observe things such as wait times, randomization, ramp ups, ramp downs, peaks, etc.
+Our current workload model is a minimum viable product that simply requests blockchain blocks. Ideally, it should be possible to generate workloads that match those in production. I.e. they have approximate blends of requests, observe things such as wait times, randomization, ramp ups, ramp downs, peaks, etc.
 
 Several well-known open-source performance testing tools that simulate client workload exists. Their viability to perform this task has been initially assessed. Most products provide a simple http or websocket request interface. However, we believe that part of the complexity of substrate deployments lies in the richness of its API and the power of its client libraries.
 
 We looked at toolkits that would allow us to use a custom client library in nodejs to provide the implementation instead of just plain HTTP/WS definitions. 
 
-It seems like that [artillery.io](https://www.artillery.io/) has the best chance to allow us to implement rich workload modeling.
+It seems like [artillery.io](https://www.artillery.io/) has the best chance to allow us to implement rich workload modeling.
 
 #### Load balancing test scenarios
 
