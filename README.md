@@ -17,6 +17,8 @@ Minimum hardware requirement: CPU with 4 cores and 8 gb memory
 
 Recommended hardware requirements: CPU with 8 cores and 16b memory
 
+Increasing the concurrent connection needs more memory for the test client. With a 16 GB memory, you could run around 150 concurrent connections.
+
 ## Installation 
 This framework has been tested on Linux Ubuntu 20.04 with Python v3.8.10, Docker 20.10.13 and Docker Compose v1.29.2.
 
