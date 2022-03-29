@@ -72,27 +72,50 @@ We designed `cpu-tests` to look specifically on core utilization with the goal t
 
 A batch of tests were performed whith **8 cores** active and another with **2 cores** active.  The first set served the standardized workload investing **8ms** of CPU time per request and the second investing **7ms** of CPU time per request. 
 
-Furthermore, the charts of CPU activity captured during the execution confirmed that the CPU core usage was well balanced.
+Furthermore, the charts of CPU activity captured during the execution confirmed that the CPU core usage is  balanced.
 
 ![image](https://github.com/dwellir-public/rpc-perf/blob/main/tests/cpu-test/high/1648231843939/panel-2.png)
 
 The test confirms that the RPC Node uses all cores in a balanced way, and that the penalty of having more cores active does not seem significant. 
 
 ### Database Cache Test
-..
+We designed the  `cache-test` to measure the potential the impact of database cache adjustments in production.
 
-..
+Since our standardized workload is not too rich (see next steps below) we decided to not only increase the default cache size but also reduce the default cache to test the behavior of the node under different cache settings, We tested with **32Mb** versus **1024Mb**. 
+
+With **1024Mb** of database cache the standarized workload was served investing **5ms** of CPU time with request, while with **32Mb** CPU time per request was **26ms**.
+
+The result confirms that Database cache setting has significant impact on node performance.
 ### Peer Configuration Test
-..
-#### Can be reduced
-..
+We designed **peers-test** to check the impact of the number of peers setting of the **libp2p** protocol in general node performance. 
+
+We tested values of **50** p2p peers versus **4** p2p peers. 
+
+With 50 peers the standardized workload was served investing **6ms** of CPU time per request while with 4 p2p peers the required CPU time came down to **4ms**. 
+
+The test results confirm some gain of performance.
+
 ### Linear Scalability
+
+In line with the feedback received by operators we designed **concurrency-test** to be able to test for scalability.
+
+By increasing the number of simulated users or concurrent connections there may be a point in which the overhead becomes too expensive and the same workload is served with much higher CPU investment per request. Basically we expect to see a point in which the node "degrades" and provides a sub suboptimal service. 
+
+We started simulating 50 concurrent users/connections and increased the number in different test runs until 400 concurrent users. In all cases the standarized workload was split among the available user connections.
+
+We can clearly see how CPU time invested per request grows as concurrent users grow. Some test runs with 400 concurrent users saw an investment on CPU per request 300% higher than with lower concurrency, which supports the claim that scalability is not lineal.
+
+However we see that our test runs fall into 2 different groups. There are "good runs" that seems to scale linearly. But some runs are way worse.
+
+We don't want to draw any conclusion at this stage from this test without first implementing a better workload model (see next steps below). 
 
 ## Conclusion
 
 Although the toolkit is prototypal it was effective in gaining an understanding of what we were experiencing in the data-center.
 
-[Dwellir](https://dwellir.com/)'s initial performance issues have been seriously mitigated by a structured and reproducible testing approach. We could measure each identified point, the effect of tunning performance parameters, and in the case of CPU utilization, we could identify that the root cause of the issue was in the XXXXXXXXX. 
+[Dwellir](https://dwellir.com/)'s initial performance issues have been seriously mitigated by a structured and reproducible testing approach. We could measure each identified point, the effect of tunning performance parameters. In the case of CPU Core utilization we could identify that the cause of the issue was not related to the RPC node. 
+
+The linear scalability test is inconclusive for us at this stage, our workload modeling is too simplistic to draw a conclusion. With a better workload model and interface to profiling (see next steps below) we could try to test if the node performance is degrading at some point.   
 
 We believe there is significant potential in continuing the development of this performance toolkit. After our experience we consider that the following next steps would be appropriate:
 
