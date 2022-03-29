@@ -146,7 +146,7 @@ async function recordResults(startDate, endDate) {
   await dumpMetrics('http://cadvisor:8080/metrics', `${dir}/metrics-cadvisor.txt`);
   await dumpMetrics('http://node_exporter:9100/metrics', `${dir}/metrics-node-exporter.txt`);
   await dumpMetrics('http://substrate_node:9615/metrics', `${dir}/metrics-polkadot.txt`);
-  
+
   // download panels from grafana
   let panels = 8;
   for (let i = 1; i <= panels; i++) {
@@ -163,7 +163,7 @@ async function recordResults(startDate, endDate) {
     start: startDate,
     end: endDate,
     result: {
-      CpuUsageSum: sumCpuUsage,
+      cpuUsageSum: sumCpuUsage,
       cpuUsage: cpuUsage,
       cpuTimePerRequest: `${cpuTimePerRequest} ms`
     },
@@ -210,7 +210,7 @@ async function downloadImage(url, filepath) {
   });
 }
 
- // fetch prometheus metric by name
+// fetch prometheus metric by name
 function getMetric(metricName, time) {
   return new Promise((resolve, reject) => {
     unirest("POST", "http://prometheus:9090/api/v1/query")
@@ -236,13 +236,21 @@ function getMetric(metricName, time) {
   })
 }
 
+// get range value for a metric
 async function getMetricRange(metricName, startTime, endTime) {
   let start = await getMetric(metricName, startTime);
-  if (start.length > 0) {
-    log.warn(`Expected no metric at start of the test but found start value ${start}.`)
+  let end = await getMetric(metricName, endTime);
+  let res = [];
+  for (let i = 0; i < end.length; i++) {
+    if (i < start.length) {
+      log.warn(`Found metric before start of the test with value ${start[i]} at index ${i}.`)
+      res.push(end[i] - start[i]);
+    }
+    else {
+      res.push(end[i]);
+    }
   }
-
-  return await getMetric(metricName, endTime);
+  return res;
 }
 
 // traverse random blocks in the range of start and end
@@ -250,15 +258,15 @@ async function traverseBlocks(api, start, end, totalCount, info) {
   const length = end - start;
   let count = 0;
   while (count < totalCount) {
-      const randomBlock = Math.floor(Math.random() * length) + start;
-      const blockHash = await api.rpc.chain.getBlockHash(randomBlock);
-      await api.rpc.chain.getBlock(blockHash);
-      const apiAt = await api.at(blockHash);
-      await apiAt.query.system.events();
-      await apiAt.query.transactionStorage?.blockTransactions();
-      await apiAt.query.system.allExtrinsicsLen();
-      count++;
-      info.counter++;
+    const randomBlock = Math.floor(Math.random() * length) + start;
+    const blockHash = await api.rpc.chain.getBlockHash(randomBlock);
+    await api.rpc.chain.getBlock(blockHash);
+    const apiAt = await api.at(blockHash);
+    await apiAt.query.system.events();
+    await apiAt.query.transactionStorage?.blockTransactions();
+    await apiAt.query.system.allExtrinsicsLen();
+    count++;
+    info.counter++;
   }
 }
 
