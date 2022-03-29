@@ -4,21 +4,21 @@ SHELL = /bin/sh
 
 CURRENT_UID := $(shell id -u)
 CURRENT_GID := $(shell id -g)
-TEST := .
+ENV := ./.env
 export CURRENT_UID
 export CURRENT_GID
 
 build: 
-	docker-compose --env-file ${TEST}/.env --profile test build
+	docker-compose --env-file ${ENV} --profile test build
 
 pull:
-	docker-compose --env-file ${TEST}/.env pull
+	docker-compose --env-file ${ENV} pull
 
 up: 
-	docker-compose --env-file ${TEST}/.env up
+	docker-compose --env-file ${ENV} up
 
 test: down
-	docker-compose --env-file ${TEST}/.env --profile test up --abort-on-container-exit
+	docker-compose --env-file ${ENV} --profile test up --abort-on-container-exit
 
 down: 
 	-docker-compose down
@@ -26,24 +26,24 @@ down:
 	-docker volume rm rpc-perf_grafana_data rpc-perf_prometheus_data
 
 download-snapshot:
-	docker-compose --env-file ${TEST}/.env run prefetch-data
+	docker-compose --env-file ${ENV} run prefetch-data
 
-test-cpu-low: TEST = ./tests/cpu-test/low
+test-cpu-low: ENV = ./tests/cpu-test/low/.env
 test-cpu-low: test
-test-cpu-high: TEST = ./tests/cpu-test/high
+test-cpu-high: ENV = ./tests/cpu-test/high/.env
 test-cpu-high: test
 
-test-cache-low: TEST = ./tests/cache-test/low
+test-cache-low: ENV = ./tests/cache-test/low/.env
 test-cache-low: test
-test-cache-high: TEST = ./tests/cache-test/high
+test-cache-high: ENV = ./tests/cache-test/high/.env
 test-cache-high: test
 
-test-concurrency-low: TEST = ./tests/concurrency-test/low
+test-concurrency-low: ENV = ./tests/concurrency-test/low/.env
 test-concurrency-low: test
-test-concurrency-high: TEST = ./tests/concurrency-test/high
+test-concurrency-high: ENV = ./tests/concurrency-test/high/.env
 test-concurrency-high: test
 
-test-peers-low: TEST = ./tests/peers-test/low
+test-peers-low: ENV = ./tests/peers-test/low/.env
 test-peers-low: test
-test-peers-high: TEST = ./tests/peers-test/high
+test-peers-high: ENV = ./tests/peers-test/high/.env
 test-peers-high: test

@@ -44,9 +44,15 @@ This framework has been tested on Linux Ubuntu 20.04 with Python v3.8.10, Docker
 
 - To run tests with custom environment, define and pass an environment file.
 
-`make test TEST_ENV=.env.low-cache-test`
+`make test ENV=<path-to-env-file>`
 
+
+- There are few test templates that already exists and can be invoked through `make test-<type>-<subtype>` where 
+    - Available values for `type` is: `cache`, `concurrency`, `cpu` or `peers`
+    - Available values for `subtype` is: `low`, `high`
+
+- To run a test with high concurrency, you can run `make test-concurrency-high`.
 
 - If you need to re-download the snapshot of the chain, please first run
 `docker-compose down -v`
-then run `make download-snapshot.
+then run `make download-snapshot`.
