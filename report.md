@@ -74,7 +74,7 @@ A batch of tests were performed whith **8 cores** active and another with **2 co
 
 Furthermore, the charts of CPU activity captured during the execution confirmed that the CPU core usage was well balanced.
 
-
+![image](https://github.com/dwellir-public/rpc-perf/blob/main/tests/cpu-test/high/1648231843939/panel-2.png)
 
 The test confirms that the RPC Node uses all cores in a balanced way, and that the penalty of having more cores active does not seem significant. 
 
