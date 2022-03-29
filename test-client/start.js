@@ -90,6 +90,10 @@ async function progress(info) {
   recordResults(info.startDate, new Date());
 }
 
+/*
+* Basic ramp up of connections which starts 10% of connection,
+* then doubling until 100%. 
+*/
 function rampUpConnectionCount(currentConnections, maxConnections) {
   // start with 10% of connections
   if (currentConnections == 0) {
@@ -244,10 +248,10 @@ async function getMetricRange(metricName, startTime, endTime) {
   for (let i = 0; i < end.length; i++) {
     if (i < start.length) {
       log.warn(`Found metric before start of the test with value ${start[i]} at index ${i}.`)
-      res.push(end[i] - start[i]);
+      res.push((end[i] - start[i]).toString());
     }
     else {
-      res.push(end[i]);
+      res.push(end[i].toString());
     }
   }
   return res;
