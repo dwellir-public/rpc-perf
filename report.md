@@ -107,6 +107,8 @@ We can clearly see how CPU time invested per request grows as concurrent users g
 
 However we see that our test runs fall into 2 different groups. There are "good runs" that seems to scale linearly. But some runs are way worse.
 
+![image](https://github.com/dwellir-public/rpc-perf/blob/main/cvsCharts/ConcurrencyTestChart.png)
+
 We don't want to draw any conclusion at this stage from this test without first implementing a better workload model (see next steps below). 
 
 ## Conclusion
