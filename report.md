@@ -29,7 +29,7 @@ We also received feedback from members of the community regarding node settings 
 Additionally Software and Profiling specialists would point at the following issues inherent of software performance work:
 
 - Difficulty to tune/work on performance when there isn't a clear specification of what is achievable or considered good or bad  for a given reference hardware platform.
-- Complexity to operate production infrastructure which typically involves orchestration functionality that will manage (i.e. limit) resource availability across workloads. This typically translates into having the ability to make "lab" tests and isolate workload from delivery platforms.
+- Complexity to operate production infrastructure which typically involve orchestration functionality that will manage (i.e. limit) resource availability across workloads. This typically translates into the need to make "lab" tests that isolate workload from delivery platforms.
 
 Therefore it would be ideal to have a structured approach to performance testing that provided us with the capability to validate a deployment: i.e. performs within its specification or expected performance.
 
@@ -60,27 +60,23 @@ Our initial minimum viable performance testing toolkit is available in the follo
 The performance toolkit is prototypal yet allowed us to identify, mitigate and/or resolve the performance issues identified initially:
 
 ## Performed Tests
-We have been doing the following tests and below we report our results. 
+The main metric that we collect to asses how the RPC node performed is accumulated CPU time (user + system) divided by the total number of requests served during the test. All tests will serve a standarized workload. 
 
-As a baseline for our tests, we have been using the standard configurations of the node at the start of this project.
+For example we can say that a given test configuration spent 6ms of CPU time per request, while another spent 8ms per request. This allows us to get an idea of relative performance of different node setups, node versions, underlying platform configurations, etc.
 
-Tests:
-* CPU Utilization 
-* Database Cache
-* Peer Configuration 
-* Linear Scalability
+### CPU Core Utilization Test
 
-Standard configuration: 
+Node operators collected telemetry on a load balanced deployment on metal that clearly showed one CPU core overloaded while the others remained healthy. Since the metal was dedicated to the RPC node deployment the node operator started to work on the hypothesis that the RPC node would not utilize cores in a balanced way.
 
-* Database cache: 128mb
-* Peers: 50 connections
-* Concurrent connections: 100
-* CPUs: 4
+We designed `cpu-tests` to look specifically on core utilization with the goal to provide the node operator with clarity about the way in which the RPC node behaves. 
 
-### CPU Utilization Test
-..
+A batch of tests were performed whith **8 cores** active and another with **2 cores** active.  The first set served the standardized workload investing **8ms** of CPU time per request and the second investing **7ms** of CPU time per request. 
 
-..
+Furthermore, the charts of CPU activity captured during the execution confirmed that the CPU core usage was well balanced.
+
+
+
+The test confirms that the RPC Node uses all cores in a balanced way, and that the penalty of having more cores active does not seem significant. 
 
 ### Database Cache Test
 ..
@@ -130,7 +126,7 @@ Currently, a single rpc node instance is tested, however it would be desirable t
 
 #### Profiling interface
 
-To best serve the community. The toolkit should also be useful during development and profiling. For example by using the load simulation while iterating with the profiler, or by running a test plan in which memory dumps are collected for later analysis, etc.
+To best serve the community, the toolkit should also be useful during development and profiling. For example by using the load simulation while iteracting with the profiler or by running a test plan in which memory dumps are collected for later analysis, etc.
 
 #### Integration with existing tools
 
