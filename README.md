@@ -56,3 +56,11 @@ This framework has been tested on Linux Ubuntu 20.04 with Python v3.8.10, Docker
 - If you need to re-download the snapshot of the chain, please first run
 `docker-compose down -v`
 then run `make download-snapshot`.
+
+### Default configuration
+These default values can be changed in the .env-files.
+- Database cache: 128mb
+- CPU cores: 4
+- Peers: 50
+- Concurrent connections: 50
+
