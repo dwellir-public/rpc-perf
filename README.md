@@ -1,7 +1,7 @@
 # RPC-perf
 
 ## Update
-This repository is no longer maintained. If you want to perf test a substrate node, check out [artillery-engine-substrate](https://github.com/dwellir-public/artillery-engine-substrate). Artillery allows better work load modelling and is highly extensible.
+Also check out [artillery-engine-substrate](https://github.com/dwellir-public/artillery-engine-substrate). Artillery allows better work load modelling and is highly extensible.
 
 ## Introduction
 RPC-perf is a framework to stress test an RPC node for a given system configuration. The purpose of this framework is to help node operators to know which configurations are the optimal for a given system. This framework should work for all chains developed on Substrate. This toolkit have been tested on Kusama. 
